@@ -1,0 +1,9 @@
+[book]
+authors = ["bqdong"]
+language = "en"
+multilingual = false
+src = "src"
+title = "JVM Specification (Java SE 17 Edition) Chinese Translation"
+
+[output.html]
+mathjax-support = true
