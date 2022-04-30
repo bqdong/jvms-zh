@@ -62,7 +62,7 @@ Java 虚拟机规范，但它本身并不是规范的一部分。在*Java Virtua
 
 > 这是非规范性信息。 它提供直觉、基本原理、建议、示例等。
 
-### 反馈
+## 反馈
 
 读者可以报告*Java Virtual Machine Specification*中的技术错误和歧义，反馈至jls-jvms-spec-comments@openjdk.java.net（译者注：由于译者水平有限，此翻译可能存在不准确，反馈时请自行阅读原版规范确定无误后再反馈）。
 
