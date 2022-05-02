@@ -137,6 +137,10 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="引用类型"><a class="header" href="#引用类型">引用类型</a></h1>
+<p>有三种引用（<em>reference</em>）类型：类类型、数组类型和接口类型。相对应的，它们的值是对动态创建的类实例、或实现接口的类实例或者数组的引用。</p>
+<p>数组类型由具有单一维度的组件类型（<em>component type</em>）组成(其长度不是由类型给出的)。数组类型的组件类型本身可以是数组类型。如果，从任何数组类型开始，考虑其组件类型，然后是该类型（如果它也是一个数组类型）的组件类型，等等，最终必须到达组件类型不是数组类型；这个类型则叫做数组的元素类型（<em>element type</em>）。数组类型的元素类型必须是原子类型，或者类类型，或这接口类型。</p>
+<p>引用值（reference value）也可以是特殊的空引用（null reference），这个引用没有对象（a reference to no object），这里用<code>null</code>表示。空引用最初没有运行时类型，但可以转换为任何类型。<code>reference</code>类型的默认值为<code>null</code>。</p>
+<p>此规范不强制要求将<code>null</code>编码为一个特定的值。</p>
 
                     </main>
 
