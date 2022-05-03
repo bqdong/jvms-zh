@@ -1,6 +1,6 @@
 [book]
 authors = ["bqdong"]
-language = "en"
+language = "zh-Hans"
 multilingual = false
 src = "src"
 title = "JVM Specification (Java SE 17 Edition) Chinese Translation"
