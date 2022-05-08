@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>栈帧 - JVM Specification (Java SE 17 Edition) Chinese Translation</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> 介绍</a></li><li class="chapter-item expanded "><a href="../chap02/structure_of_jvm.html"><strong aria-hidden="true">2.</strong> JVM的结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../chap02/class_file_format.html"><strong aria-hidden="true">2.1.</strong> class文件格式</a></li><li class="chapter-item expanded "><a href="../chap02/data_type.html"><strong aria-hidden="true">2.2.</strong> 数据类型</a></li><li class="chapter-item expanded "><a href="../chap02/primitive_type.html"><strong aria-hidden="true">2.3.</strong> 原子类型</a></li><li class="chapter-item expanded "><a href="../chap02/reference_type.html"><strong aria-hidden="true">2.4.</strong> 引用类型</a></li><li class="chapter-item expanded "><a href="../chap02/runtime_data_area.html"><strong aria-hidden="true">2.5.</strong> 运行时数据区域</a></li><li class="chapter-item expanded "><a href="../chap02/frames.html" class="active"><strong aria-hidden="true">2.6.</strong> 栈帧</a></li><li class="chapter-item expanded "><a href="../chap02/representation_of_objects.html"><strong aria-hidden="true">2.7.</strong> 对象的表示</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">JVM Specification (Java SE 17 Edition) Chinese Translation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="栈帧frames"><a class="header" href="#栈帧frames">栈帧（frames）</a></h2>
+<p>栈帧用于存储数据和部分结果，以及执行动态链接，方法返回值以及异常处理（dispatch exception）。</p>
+<p><strong>每次调用方法时都会创建一个新的栈帧</strong>。方法调用完成时栈帧会被销毁，无论该完成是正常的还是发生意外（抛出一个没有捕获的异常）。创建栈帧的线程在 Java 虚拟机栈上为栈帧分配空间（§2.5.2）。每个栈帧都有自己的本地变量（§2.6.1），其自己的操作数栈（§2.6.2），以及当前方法所在的类的运行时常数池（§2.5.5）的引用。</p>
+<blockquote>
+<p>栈帧可以有额外的实现特定的信息作为扩展，如调试信息。</p>
+</blockquote>
+<p>本地变量组和操作数栈的大小在编译时确定，并与方法的栈帧的代码（第4.7.3节）一起提供。因此，栈帧数据结构的大小仅取决于 Java 虚拟机的实现，并且这些数据结构所需的内存可以在方法调用的同时进行分配。</p>
+<p>任何时候，在指定的线程的控制下，只有一个栈帧，即执行方法的栈帧，是活跃的状态。该栈帧称为当前栈帧（<em>current frame</em>），其方法称为当前方法（<em>current method</em>）。定义当前方法的类是当前类（<em>current class</em>）。对本地变量和操作数栈的操作通常都是指对当前栈帧的操作。</p>
+<p>栈帧变成不是当前栈帧如果它对应的方法调用了另一个方法或者它对应方法完成。当调用一个方法时，一个新的栈帧被创建并且当控制转移到新方法时该新建的栈帧变成当前栈帧。在方法返回时，当前栈帧将其方法调用（如果有）的结果传递给上一个栈帧。然后将当前栈帧丢弃，因为上一个栈帧变为当前栈帧。</p>
+<p>请注意，由线程创建的栈帧是该线程的本地栈帧，任何其他线程都无法引用。</p>
+<h3 id="局部变量"><a class="header" href="#局部变量">局部变量</a></h3>
+<p>每个栈帧（§2.6）包含称为局部变量（<em>local variables</em>）的变量表（<em>an array of variables</em>）。栈帧的局部变量表（local variable array 译者注：应该就是方法的所有局部变量）的长度在编译时确定，并在类或接口的二进制表示中提供，二进制表示中也有和方法的栈帧相关联的代码（§4.7.3）。</p>
+<p>单个局部变量可以容纳<code>boolean</code>，<code>byte</code>，<code>char</code>，<code>short</code>，<code>int</code>，<code>float</code>，<code>reference</code>或<code>returnAddress</code>类型的值。一对局部变量可以容纳<code>long</code>或<code>double</code>（<em>A pair of local variables can hold a value of type long or double</em>）。</p>
+<p>局部变量通过索引进行定位。第一个局部变量的索引为零。当且仅当一个整数介于零和局部变量表的长度减一时，该整数被认为是局部变量数组中的索引。</p>
+<p><code>long</code>或<code>double</code>类型的值占据了两个连续的局部变量。这样的值只能使用较小的索引来定位。例如，一个存储在局部变量表中并且索引为 n 的<code>double</code>类型的局部变量实际上占据了索引为 n 和 n+1 的两个局部变量；但是，索引 n+1 处的局部变量无法加载。但它可以进行存储。但是，这样做会使局部变量 n 的内容无效。</p>
+<p>Java 虚拟机不需要 n 是偶数。用直观的术语，<code>long</code>和<code>double</code>类型的值在局部变量数组中不需要64位对齐。实现者可以自由地决定使用为该值保留的两个局部变量来表示此类值的适当方法。</p>
+<p>Java 虚拟机在方法调用上使用局部变量来传递参数。在类方法（class method）调用上，任何参数均以从局部变量 0 开始的连续局部变量传递。在实例方法（instance method）调用上，局部变量  0始终用于传递对实例方法被调用的对象的引用（在 Java 变成语言中用 <code>this</code> 表示）。之后的任何参数的传递使用的是从局部变量 1 开始的连续的局部变量。</p>
+<h3 id="操作数栈"><a class="header" href="#操作数栈">操作数栈</a></h3>
+<p>每个栈帧（第2.6节）包含一个名为操作数栈（<em>operand stack</em>）的先进后出（last-in-first-out, LIFO）的栈。栈帧的操作数栈的做大深度在编译时决定，并与方法栈帧的相关代码一起提供（第4.7.3节）。</p>
+<p>在上下文清楚的地方，我们有时将当前栈帧的操作数栈称为操作数栈。</p>
+<p>当创建包含该操作数栈的栈帧时，该操作数栈为空。 Java 虚拟机提供指令来加载常量、局部变量的值或者是成员变量到操作数栈中。其它 Java 虚拟机指令从操作数栈中取出操作数，对其进行操作，然后将结果压回操作数堆栈（push the result back onto the operand stack）。操作数栈还用于准备要传递到方法的参数和接收方法结果。</p>
+<p>例如，<em>iadd</em> 指令（<em>§iadd</em>）将两个<code>int</code>值进行相加。它要求被进行相加操作的两个<code>int</code>值是操作数栈顶的两个值，这两个值是被之前的指令压入栈中的。两个<code>int</code>值都从操作数栈中弹出。它们进行相加操作，并将其总和压回操作数栈。子计算可以嵌套在操作数栈上，从而导致包含计算可以使用的值。（Subcomputations may be nested on the operand stack, resulting in values that can be used by the encompassing computation.）</p>
+<p>操作数堆栈上的每个条目（entry）都可以容纳任何  Java 虚拟机类型的值，包括<code>long</code>和<code>double</code>类型的值。</p>
+<p>操作数堆栈中的值必须以适合其类型的方式进行操作。例如，不可以将两个<code>int</code>值压入操作数栈然后将它们视为一个<code>long</code>值，也不可以将两个<code>float</code>值压入操作数栈然后使用 <em>iadd</em> 指令来将它们进行相加。少数 Java 虚拟机指令（<em>dup</em>指令（<em>§dup</em>）和<em>swap</em>指令（<em>§swap</em>））在运行时数据区域作为原始值操作，而无需考虑其特定类型；这些指令的定义为不能用于以修改或分解单个值的方式来进行操作。这些对操作数栈操作的限制是通过<code>class</code>文件验证（第4.10节）强制执行的。</p>
+<p>在任何时间点，一个操作数栈具有一个相关联的深度，其中<code>long</code>或<code>double</code>的值构成了两个单位的深度，并且任何其他类型的值都贡献一个单位的深度。</p>
+<h3 id="动态链接"><a class="header" href="#动态链接">动态链接</a></h3>
+<p>每个栈帧（§2.6）包含对当前方法对应的类型的运行时常量池（§2.5.5）的引用，以支持方法代码的动态链接（<em>dynamic linking</em>）。方法的<code>class</code>文件代码是指通过符号引用被调用的方法和通过符号引用被访问的变量。动态链接将这些符号方法引用转化为具体方法引用，根据需要加载类，以解决尚未定义的符号，并将变量访问转换为与这些变量的运行时位置相关的存储结构中的正确的偏移量。</p>
+<p>方法和变量的这种后期绑定使其他类的更改方法在方法中使用的可能性较小。（This late binding of the methods and variables makes changes in other classes that
+a method uses less likely to break this code.）</p>
+<h3 id="方法调用正常完成normal-method-invocation-completion"><a class="header" href="#方法调用正常完成normal-method-invocation-completion">方法调用正常完成（Normal Method Invocation Completion）</a></h3>
+<p>当此次调用没有抛出异常方法调用正常（<em>completes normally</em>）完成，不管该异常是直接从 Java 虚拟机抛出或者是从显式的 <code>throw</code> 语句抛出。如果当前方法的调用正常完成，则可以将值返回到调用方法。当调用方法执行返回指令之一（§2.11.8）时，就会发生这种情况，其选择必须符合返回值的类型（如果有返回值）。</p>
+<p>在这种情况下，使用当前栈帧（§2.6）来恢复调用者的状态，包括其局部变量和操作数栈，调用者的程序计数器适当地递增，以跳过方法调用指令。然后，将返回的值（如果有）压入该栈帧的操作数栈，调用方法正常在其栈帧中执行。</p>
+<h3 id="方法调用发生意外abrupt-method-invocation-completion"><a class="header" href="#方法调用发生意外abrupt-method-invocation-completion">方法调用发生意外（Abrupt Method Invocation Completion）</a></h3>
+<p>当此次调用造成 Java 虚拟机抛出异常并且异常没有被处理时方法调用发生意外（§2.10）。执行<em>athrow</em>指令（<em>§athrow</em>）也会导致异常被显式抛出，如果当前方法未捕获异常，会导致方法调用发生意外。意外完成的方法调用永远不会将返回值返回给其调用者。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chap02/runtime_data_area.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../chap02/representation_of_objects.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chap02/runtime_data_area.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../chap02/representation_of_objects.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
