@@ -7,3 +7,5 @@
   - [原子类型](./chap02/primitive_type.md)
   - [引用类型](./chap02/reference_type.md)
   - [运行时数据区域](./chap02/runtime_data_area.md)
+  - [栈帧](./chap02/frames.md)
+  - [对象的表示](./chap02/representation_of_objects.md)
