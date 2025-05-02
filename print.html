@@ -1,15 +1,17 @@
 <!DOCTYPE HTML>
-<html lang="zh-Hans" class="sidebar-visible no-js light">
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>JVM Specification (Java SE 17 Edition) Chinese Translation</title>
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex">
+
+
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
         <link rel="icon" href="favicon.svg">
         <link rel="shortcut icon" href="favicon.png">
@@ -17,30 +19,37 @@
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
         <link rel="stylesheet" href="css/print.css" media="print">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link rel="stylesheet" href="fonts/fonts.css">
+
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+
         <!-- MathJax -->
-        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
     </head>
     <body>
-        <!-- Provide site root to javascript -->
-        <script type="text/javascript">
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
-        </script>
-
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -53,50 +62,60 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
-            var theme;
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('no-js')
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            html.classList.add("js");
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
+            sidebar_toggle.checked = sidebar === 'visible';
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> 介绍</a></li><li class="chapter-item expanded "><a href="chap02/structure_of_jvm.html"><strong aria-hidden="true">2.</strong> JVM的结构</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="chap02/class_file_format.html"><strong aria-hidden="true">2.1.</strong> class文件格式</a></li><li class="chapter-item expanded "><a href="chap02/data_type.html"><strong aria-hidden="true">2.2.</strong> 数据类型</a></li><li class="chapter-item expanded "><a href="chap02/primitive_type.html"><strong aria-hidden="true">2.3.</strong> 原子类型</a></li><li class="chapter-item expanded "><a href="chap02/reference_type.html"><strong aria-hidden="true">2.4.</strong> 引用类型</a></li><li class="chapter-item expanded "><a href="chap02/runtime_data_area.html"><strong aria-hidden="true">2.5.</strong> 运行时数据区域</a></li><li class="chapter-item expanded "><a href="chap02/frames.html"><strong aria-hidden="true">2.6.</strong> 栈帧</a></li><li class="chapter-item expanded "><a href="chap02/representation_of_objects.html"><strong aria-hidden="true">2.7.</strong> 对象的表示</a></li></ol></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -113,6 +132,7 @@
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+
                     </div>
                 </div>
 
@@ -126,8 +146,9 @@
                         </ul>
                     </div>
                 </div>
+
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -160,8 +181,8 @@
 <p>第7章给出了一个以操作码值为索引的Java虚拟机操作码助记符表。</p>
 <p>在第二版的<em>Java Virtual Machine Specification</em>，第2章概述了 Java 编程语言，旨在支持
 Java 虚拟机规范，但它本身并不是规范的一部分。在<em>Java Virtual Machine Specification, Java SE 17 Edition</em>（译者注：也就是本手册）中，请读者参阅<a href="https://docs.oracle.com/javase/specs/jls/se17/html/index.html"><em>The Java Language Specification, Java SE 17 Edition</em></a>来查询Java编程语言相关信息。引用的格式：(JLS§x.y)指出需要这样做的地方。</p>
-<p>在第二版的Java虚拟机规范，第8章详细解释了具有共享主存的Java虚拟机线程交互的底层操作。在<em>Java Virtual Machine Specification, Java SE 17 Edition</em>中，读者可以参考<a href="https://docs.oracle.com/javase/specs/jls/se17/html/index.html"><em>The Java Language Specification, Java SE 17 Edition</em></a>的第17章有关线程和锁的信息。第17章反映了出自于JSR133专家组的<a href="https://www.cs.umd.edu/%7Epugh/java/memoryModel/jsr133.pdf">The Java Memory Model and Thread Specification</a>。</p>
-<h2 id="符号"><a class="header" href="#符号">符号</a></h2>
+<p>在第二版的Java虚拟机规范，第8章详细解释了具有共享主存的Java虚拟机线程交互的底层操作。在<em>Java Virtual Machine Specification, Java SE 17 Edition</em>中，读者可以参考<a href="https://docs.oracle.com/javase/specs/jls/se17/html/index.html"><em>The Java Language Specification, Java SE 17 Edition</em></a>的第17章有关线程和锁的信息。第17章反映了出自于JSR133专家组的<a href="https://www.cs.umd.edu/~pugh/java/memoryModel/jsr133.pdf">The Java Memory Model and Thread Specification</a>。</p>
+<h2 id="表示法"><a class="header" href="#表示法">表示法</a></h2>
 <p>在整个规范中，我们指出的类和接口取自Java SE平台API。当我们引用一个类或接口时(除了那些声明在示例中的)，使用单个标识符<em>N</em>，其指的是<code>java.lang</code>包中的类或接口。在<code>java.lang</code>包以外的类或者接口，我们使用全限定名（fully qualified name）来指明。</p>
 <p>每当我们引用一声明在<code>java</code>或它的任何子包中的类或者接口时，预期的引用是那个类或者接口被启动类加载器加载(<a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-5.html#jvms-5.3.1">§5.3.1</a>)。</p>
 <p>每当我们引用一个名为<code>java</code>的包的子包时，预期的引用是由启动类装加载器决定的。</p>
@@ -214,7 +235,7 @@ Java 虚拟机规范，但它本身并不是规范的一部分。在<em>Java Vir
 <ul>
 <li>对于<code>byte</code>，范围为-128~127（\(-2^7\)~\(2^7-1\)），包含-128和127</li>
 <li>对于<code>short</code>，范围为-32768~32767（\(-2^15\)~\(2^15-1\)），包含-32768和32767</li>
-<li>对于<code>int</code>，范围为-2147483648 ~2147483647（\(-2^31\)~\(2^31-1\)），包含-2147483648和2147483647</li>
+<li>对于<code>int</code>，范围为-2147483648 <del>2147483647（\(-2^31\)</del>\(2^31-1\)），包含-2147483648和2147483647</li>
 <li>对于<code>long</code>，范围为-9223372036854775808~9223372036854775807（\(-2^63\)~\(2^63-1\)），包含-9223372036854775808和9223372036854775807</li>
 <li>对于<code>char</code>，范围为0~65535，包含0和65535</li>
 </ul>
@@ -223,7 +244,7 @@ Java 虚拟机规范，但它本身并不是规范的一部分。在<em>Java Vir
 <blockquote>
 <p>在Java SE 15及之后的版本中，Java虚拟机使用IEEE 754的2019版标准。在Java SE 15之前，Java虚拟机使用的是1985版的IEEE  754标准，其中binary32格式被称为单精度（single format），binary64格式被称为双精度（double format）。</p>
 </blockquote>
-<p>IEEE 754不仅包括由符号和绝对值（<a href="https://simple.wikipedia.org/wiki/Magnitude_(mathematics)#:%7E:text=The%20magnitude%20of%20a%20real%20number%20is%20usually,absolute%20value%20or%20modulus.%20It%20is%20written%20as"><em>magnitude</em></a>）组成的正数和负数，还有正零和负零，正无穷大和负无穷大(<em>infinities</em>)，和特殊的非数值的值(Not-a-Number)(以下简称NaN)。NaN值为用于表示某些无效运算的结果，如0除以0。<code>float</code>和<code>double</code>类型的NaN常量被预定义为<code>Float.NaN</code>和<code>Double.NaN</code>。</p>
+<p>IEEE 754不仅包括由符号和绝对值（<a href="https://simple.wikipedia.org/wiki/Magnitude_(mathematics)#:~:text=The%20magnitude%20of%20a%20real%20number%20is%20usually,absolute%20value%20or%20modulus.%20It%20is%20written%20as"><em>magnitude</em></a>）组成的正数和负数，还有正零和负零，正无穷大和负无穷大(<em>infinities</em>)，和特殊的非数值的值(Not-a-Number)(以下简称NaN)。NaN值为用于表示某些无效运算的结果，如0除以0。<code>float</code>和<code>double</code>类型的NaN常量被预定义为<code>Float.NaN</code>和<code>Double.NaN</code>。</p>
 <p>有限的非零的浮点数类型的值可以被表示为\(s\cdot m \cdot 2^{(e-N+1)}\) ，这里的：</p>
 <ul>
 <li>\(s\) 是 +1 或者 -1，</li>
@@ -335,7 +356,7 @@ encode, for example, retrospective diagnostic information.</em>）。这些NaN�
 <li>如果计算需要的堆内存大小比自动存储管理系统所能提供的更多，则 Java 虚拟机会抛出<code>OutofMemoryError</code>。</li>
 </ul>
 <h3 id="方法区"><a class="header" href="#方法区">方法区</a></h3>
-<p>Java 虚拟机有一个方法区（<em>method area</em>），该方法区在所有 Java 虚拟机线程中共享。该方法区类似于通常所说的编程语言的编译代码的存储区域或类似于操作系统进程中的<a href="https://zh.wikipedia.org/wiki/%E4%BB%A3%E7%A0%81%E6%AE%B5">代码段</a>（“text&quot; segment）。它存储了每个类结构，例如运行时常量池，成员变量（field）和方法数据以及方法和构造函数的代码，包括类和接口初始化以及实例初始化中使用的特殊方法（§2.9）。</p>
+<p>Java 虚拟机有一个方法区（<em>method area</em>），该方法区在所有 Java 虚拟机线程中共享。该方法区类似于通常所说的编程语言的编译代码的存储区域或类似于操作系统进程中的<a href="https://zh.wikipedia.org/wiki/%E4%BB%A3%E7%A0%81%E6%AE%B5">代码段</a>（“text" segment）。它存储了每个类结构，例如运行时常量池，成员变量（field）和方法数据以及方法和构造函数的代码，包括类和接口初始化以及实例初始化中使用的特殊方法（§2.9）。</p>
 <p>方法区是在虚拟机启动时创建的。尽管方法区在逻辑上是堆（heap）的一部分，但简单的实现可能会选择不对该区域进行垃圾收集或压缩该区域（may choose not to either garbage collect or compact it）。该规范不要求方法区的位置或用于管理编译代码的策略。方法区可以具有固定大小，也可以根据计算的要求进行扩展，如果不需要较大的方法区域，则可能会收缩。方法区的内存不需要连续。</p>
 <blockquote>
 <p>Java 虚拟机的实现可以提供给程序员或用户对方法区初始大小的控制，以及在不同大小的方法区的情况下，控制最大和最小方法区大小的功能。</p>
@@ -355,7 +376,7 @@ encode, for example, retrospective diagnostic information.</em>）。这些NaN�
 <p>有关运行时常量池的创建的信息，请参见§5（加载，链接和初始化）。</p>
 </blockquote>
 <h3 id="本地方法栈"><a class="header" href="#本地方法栈">本地方法栈</a></h3>
-<p>Java 虚拟机的实现可以使用常规的栈，称为“ C 栈”，以支持本地（native）方法（用Java编程语言以外的其他语言编写的方法）。本地方法栈也可以被用于 Java 虚拟机指令集解释器的实现的语言中，如 C 语言。不能加载<code>native</code>方法和不依赖于传统的栈的 Java 虚拟机实现没有必要提供本地方法栈。如果提供，当创建每个线程时，通常会分配本地方法栈。（An implementation of the Java Virtual Machine may use conventional stacks, colloquially called &quot;C stacks,&quot; to support native methods (methods written in a language other than the Java programming language). Native method stacks may also be used by the implementation of an interpreter for the Java Virtual Machine's instruction set in a language such as C. Java Virtual Machine implementations that cannot load native methods and that do not themselves rely on conventional stacks need not supply native method stacks. If supplied, native method stacks are typically allocated per thread when each thread is created.）</p>
+<p>Java 虚拟机的实现可以使用常规的栈，称为“ C 栈”，以支持本地（native）方法（用Java编程语言以外的其他语言编写的方法）。本地方法栈也可以被用于 Java 虚拟机指令集解释器的实现的语言中，如 C 语言。不能加载<code>native</code>方法和不依赖于传统的栈的 Java 虚拟机实现没有必要提供本地方法栈。如果提供，当创建每个线程时，通常会分配本地方法栈。（An implementation of the Java Virtual Machine may use conventional stacks, colloquially called "C stacks," to support native methods (methods written in a language other than the Java programming language). Native method stacks may also be used by the implementation of an interpreter for the Java Virtual Machine's instruction set in a language such as C. Java Virtual Machine implementations that cannot load native methods and that do not themselves rely on conventional stacks need not supply native method stacks. If supplied, native method stacks are typically allocated per thread when each thread is created.）</p>
 <p>该规范允许本地方法栈可以是固定大小，或者根据计算的要求动态扩展和收缩。如果本地方法栈的大小为固定大小，则在创建该栈时，可以独立选择每个本地方法栈的大小。</p>
 <blockquote>
 <p>Java 虚拟机实现可以提供给程序员或用户对本地方法栈初始大小的控制，以及在本地方法栈大小变动的情况下，可以控制最大和最小方法栈大小的功能。</p>
@@ -404,38 +425,169 @@ a method uses less likely to break this code.）</p>
 <blockquote>
 <p>在一些Oracle的 Java 虚拟机实现中，类实例的引用是指向句柄（<em>handle</em>）的指针，句柄本身是一对指针：一个指向包含对象的方法和表示该对象类型的<code>Class</code>对象的指针的表，另一个指向在堆上为对象的数据分配的内存。</p>
 </blockquote>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="浮点数运算"><a class="header" href="#浮点数运算">浮点数运算</a></h1>
+<p>Java 虚拟机整合了 IEEE 754 浮点数标准的子集。</p>
+<blockquote>
+<p>在Java SE 15 及之后，Java虚拟机使用2019版的 IEEE 754 标注。之前的Java虚拟机使用1985版的 IEEE 754 标准，32位格式被称作单精度浮点数，64位格式被称为双精度浮点数。</p>
+</blockquote>
+<p>许多算术和类型转换的Java虚拟机指令支持浮点数。这些指令对应的 IEEE 754 操作如下表，除了下方特别描述的。</p>
+<div class="table-wrapper"><table><thead><tr><th>指令</th><th>IEEE 754 操作</th></tr></thead><tbody>
+<tr><td><strong><code>demp&lt;op&gt;</code></strong> , <code>femp&lt;op&gt;</code></td><td><code>compareQuietLess</code>（静默小于）,<br><code>compareQuietLessEqual</code>（静默小于等于）,<br><code>compareQuietGreater</code>（静默大于）,<br><code>compareQuietGreaterEqual</code>（静默大于等于）,<br><code>compareQuietEqual</code>（静默等于）,<br><code>compareQuietNotEqual</code>（静默不等于）</td></tr>
+<tr><td><strong><code>dadd</code></strong> , <strong><code>fadd</code></strong></td><td><code>addition</code>（加法）</td></tr>
+<tr><td><strong><code>dsub</code></strong> , <strong><code>fsub</code></strong></td><td><code>subtraction</code>（减法）</td></tr>
+<tr><td><strong><code>dmul</code></strong> , <strong><code>fmul</code></strong></td><td><code>multiplication</code>（乘法）</td></tr>
+<tr><td><strong><code>ddiv</code></strong> , <strong><code>fdiv</code></strong></td><td><code>division</code>（除法）</td></tr>
+<tr><td><strong><code>dneg</code></strong> , <strong><code>fneg</code></strong></td><td><code>negate</code>（取负）</td></tr>
+<tr><td><strong><code>i2d</code></strong> , <strong><code>i2f</code></strong> ,<br><strong><code>l2d</code></strong> , <strong><code>l2f</code></strong></td><td><code>convertFromInt</code>（从整数转换）</td></tr>
+<tr><td><strong><code>d2i</code></strong> , <strong><code>d2l</code></strong> ,<br><strong><code>f2i</code></strong> , <strong><code>f2l</code></strong></td><td><code>convertToIntegerTowardZero</code>（向零取整转换）</td></tr>
+<tr><td><strong><code>d2f</code></strong> , <strong><code>f2d</code></strong></td><td><code>convertFormat</code>（格式转换）</td></tr>
+</tbody></table>
+</div>
+<p>Java虚拟机支持的浮点数运算和IEEE 754 标准的主要差异是：</p>
+<ul>
+<li>浮点数余数指令 <code>drem</code> 和 <code>frem</code> 和 IEEE 754 的不对应。JVM 使用基于使用向0舍入策略的隐式除法；IEEE 754的余数指令则使用基于四舍五入的隐式除法。（舍入策略描述在后面）</li>
+<li>浮点数取负指令<code>dneg</code> 和 <code>fneg</code> 和 IEEE 754 的取负操作并不是精确对应。尤其是指令不需要 NaN 的符号位翻转。</li>
+<li>Java虚拟机的浮点数指令不会抛出异常，陷入，或者其它符号行的 IEEE 754 不合法的异常操作，如除 0，溢出，下溢，或不精确。</li>
+<li>Java虚拟机不只是 IEEE 754 符号浮点数比较，并且没有符号性的NaN值。</li>
+<li>IEEE 754 包含舍入方向属性的舍入策略，Java虚拟机中没有对应的。Java虚拟机对于一个浮点数指令没有提供任何方法取改变舍入策略。</li>
+<li>Java虚拟机不支持 IEEE 754 定义的扩展的32位和扩展性的64位浮点数格式。超过指定的<code>float</code>类型和<code>double</code>类型的扩展的范围和精度在操作或者存储浮点数时不会使用。</li>
+</ul>
+<blockquote>
+<p>一些 IEEE 754 操作没有对应的Java虚拟机指令，它们通过 <code>Math</code> 和 <code>StrictMath</code> 类提供，包含 IEEE 754 squareRoot 操作通过 <code>sqrt</code> 方法提供，IEEE 754 fusedMultiplyAdd 操作通过 <code>fma</code> 方法提供，IEEE 754 取余通过 <code>IEEEremainder</code> 方法提供。</p>
+</blockquote>
+<p>Java虚拟机需要支持 IEEE 754 <em>subnormal</em> 浮点数和 <em>gradual underflow</em> ，这使证明特定数值算法的期望属性更加容易。</p>
+<p>浮点运算是实数运算的近似模拟。实数有无限个，特定的浮点数格式只支持有限值。Java虚拟机中，舍入策略 (rounding policy) 是一个将实数映射成特定浮点数值的函数。对于在浮点数范围内可表示的实数，实数轴上的一个连续区间会被映射到单个浮点数值。在浮点格式中，数值上与某个浮点值相等的实数会被映射到该浮点值。例如，实数 1.5 在兼容的浮点格式下会被精确映射为浮点值 1.5。Java虚拟机定义了两种舍入策略，如下：</p>
+<ul>
+<li>四舍五入（<em>round to nearest</em>）策略应用在所有浮点数指令上，除了：转换成整数值和余数。在四舍五入策略下，不精确的结果必须是舍入后无限精确结果最接近的值；如果有两个值的接近程度一样，那么最低位是0的那个将会被选中作为结果。四舍五入舍入策略对应 IEEE 754 的默认舍入方向属性，<em>roundTiesToEven</em>.
+<blockquote>
+<p><em>roundTiesToEven</em> 舍入方向属性在1985版的 IEEE 754 标准中被称为四舍五入(round to nearest)舍入模式。Java虚拟机中的舍入策略是在这个舍入模式之后命名的。</p>
+</blockquote>
+</li>
+<li>向0舍入策略(<em>round toward zero</em>)应用在：1. 将浮点数转换成整数指令 <em>d2i</em>，<em>d2l</em>, <em>f2i</em>, <em>f2l</em> 中；2. 浮点数取余指令 <em>drem</em>，<em>frem</em> 。在向零取整（round toward zero）舍入策略下，不精确的结果会被舍入至最接近的、幅度不大于无限精度结果的可表示值。对于整数转换，向零取整策略等同于截断（直接丢弃小数部分的有效位）。向零取证的舍入策略对应 IEEE 754 中 <em>roundTowardZero</em> 舍入方向属性。
+<blockquote>
+<p><em>roundTowardZero</em> 舍入方向属性在1985版的 IEEE 754 标准中被称为向零取整(round toward zero)舍入模式。Java虚拟机中的舍入策略是在这个舍入模式之后命名的。</p>
+</blockquote>
+</li>
+</ul>
+<p>Java 虚拟机（JVM）要求所有浮点运算指令必须将其结果舍入到目标精度。每条指令所使用的舍入策略为最近舍入（round to nearest）或向零舍入（round toward zero），具体采用哪种方式取决于上述规范。</p>
+<blockquote>
+<p>Java 1.0 和 Java 1.1 要求对浮点数表达式进行严格求值（Strict evaluation）。严格求值意思是每个 <code>float</code> 操作数对应一个 IEEE 754 32位格式可表示的值，每一个 <code>double</code> 操作数对应一个 IEEE 754 64位可表示的值，并且每一个浮点数操作符对应 IEEE 754的操作必须需匹配 IEEE 754中相同操作的结果。</p>
+<p>严格求值（Strict evaluation）虽然能提供可预测的结果，但在 Java 1.0/1.1 时代的一些常见处理器架构上，会导致 Java 虚拟机（JVM）实现的性能问题。因此，从 Java 1.2 到 Java SE 16，Java SE 平台允许 JVM 实现为每种浮点类型关联 一个或两个值集（value sets）：</p>
+<p>float 类型 关联以下值集：</p>
+<ul>
+<li>
+<p>float 值集：对应 IEEE 754 二进制 32 位格式（binary32）可表示的值。</p>
+</li>
+<li>
+<p>float-extended-exponent 值集：精度位数相同，但指数范围更大。</p>
+</li>
+</ul>
+<p>double 类型 关联以下值集：</p>
+<ul>
+<li>
+<p>double 值集：对应 IEEE 754 二进制 64 位格式（binary64）可表示的值。</p>
+</li>
+<li>
+<p>double-extended-exponent 值集：精度位数相同，但指数范围更大。</p>
+</li>
+</ul>
+<p>默认允许使用 扩展指数值集（extended-exponent value sets），缓解了某些处理器架构上的性能问题。</p>
+<p>为了保持兼容性，Java 1.2 允许类文件（class file）通过 ACC_STRICT 标志 禁止 JVM 实现使用扩展指数值集。具体方式为：
+在方法声明上设置 ACC_STRICT 标志，强制该方法内的浮点运算：float 操作数使用 float 值集（binary32）。double 操作数使用 double 值集（binary64）。
+这样，标记为 ACC_STRICT 的方法的浮点语义与 Java 1.0/1.1 完全一致，确保计算结果的可预测性。</p>
+<p>从 Java SE 17 开始，Java SE 平台始终要求严格求值（strict evaluation）浮点运算。过去在部分处理器架构上因严格求值导致的性能问题，在新一代硬件中已不复存在。因此，本规范不再将 float 和 double 类型与之前描述的四个值集（value sets）关联，且 ACC_STRICT 标志（对应 strictfp 关键字）不再影响浮点运算的求值方式。</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="特殊的方法"><a class="header" href="#特殊的方法">特殊的方法</a></h1>
+<h2 id="实例初始化方法"><a class="header" href="#实例初始化方法">实例初始化方法</a></h2>
+<p>一个类有0个或过个实例初始化方法（instance initialization methods），通常每一个都对应一个使用Java语言写的构造方法。</p>
+<p>一个方法是构造方法需要满足下面所有条件：</p>
+<ul>
+<li>定义在类中（不是接口）</li>
+<li>有特殊的名字 (<code>&lt;init&gt;</code>)</li>
+<li>是 void 类型的</li>
+</ul>
+<p>在一个类中，任何非void的名为 <code>&lt;init&gt;</code> 的方法不是实例初始化方法。在接口中，任何名为 <code>&lt;init&gt;</code> 的方法不是实例初始化方法。这些方法不能被Java虚拟机调用并且被格式检查所拒绝。</p>
+<p>实例初始化方法的声明和使用被Java虚拟机限制。对于声明，方法的 <code>access_flags</code> 和 <code>code</code> 被约束。对于使用，实例初始化方法只被 <code>invokespecial</code> 指令调用。</p>
+<blockquote>
+<p>因为 <code>&lt;init&gt;</code> 在Java语言中不是一个合法的标识符，它不能被使用Java语言程序直接使用。</p>
+</blockquote>
+<h2 id="类初始化方法class-initialization-methods"><a class="header" href="#类初始化方法class-initialization-methods">类初始化方法（Class Initialization Methods）</a></h2>
+<p>一个类或接口最多拥有一个类或接口初始化方法，并由 Java 虚拟机（JVM）在初始化时调用该方法（§5.5）。</p>
+<p>一个方法被视为类或接口初始化方法（<code>&lt;clinit&gt;</code>），当且仅当满足以下所有条件：</p>
+<ul>
+<li>
+<p>方法名必须为 <code>&lt;clinit&gt;</code>（特殊名称，非 Java 合法标识符）。</p>
+</li>
+<li>
+<p>返回类型必须为 void（§4.3.3）。</p>
+</li>
+<li>
+<p>在版本号 ≥ 51.0（Java SE 7+）的类文件中：必须设置 ACC_STATIC 标志（静态方法）。不能接受任何参数（Java SE 9+ 新增要求）。</p>
+</li>
+</ul>
+<blockquote>
+<p><code>ACC_STATIC</code>的要求在Java SE 7 中被引入，不接受参数在 Java SE 9中引入。类文件的版本号在 50.0 及以以下，名为 <code>&lt;clinit&gt;</code> 并且是void的方法被认为是类或接口初始化方法，不管是否设置 <code>ACC_STATIC</code> 或者接受参数。</p>
+</blockquote>
+<p>类文件中其他名为 <clinit> 的方法不被视为初始化方法，且：JVM 不会调用这些方法。无法通过任何 JVM 指令调用（§4.9.1）。格式检查（verification）会拒绝此类方法（§4.6, §4.8）。</p>
+<blockquote>
+<p>由于 <code>&lt;clinit&gt;</code> 不是合法的 Java 标识符，开发者无法直接在 Java 代码中声明该方法。它仅由编译器自动生成（如静态变量初始化或静态代码块 static { ... }）</p>
+</blockquote>
+<h2 id="签名多态方法signature-polymorphic-methods"><a class="header" href="#签名多态方法signature-polymorphic-methods">签名多态方法（Signature Polymorphic Methods）</a></h2>
+<p>满足以下所有条件的方法称为签名多态方法（signature polymorphic）：</p>
+<ul>
+<li>声明位置：必须在 <code>java.lang.invoke.MethodHandle</code> 类或 <code>java.lang.invoke.VarHandle</code> 类中声明。</li>
+<li>参数类型：仅接受一个形式参数，类型为 <code>Object[]</code>。</li>
+<li>修饰符标志：必须同时设置 <code>ACC_VARARGS</code>（可变参数）和 <code>ACC_NATIVE</code>（本地方法）标志。</li>
+</ul>
+<p>Java 虚拟机（JVM）在 <code>invokevirtual</code> 指令（§invokevirtual）中对签名多态方法进行特殊处理，以实现以下功能：
+动态调用方法句柄（method handle）；访问一个被<code>java.lang.invoke.VarHandle</code>实例所引用的变量。</p>
+<p>方法句柄（method handle）是一种动态强类型、可直接执行的引用，指向底层方法、构造函数、字段或类似低级操作（§5.4.3.5），支持对参数或返回值进行可选转换（如类型适配、参数插入等）。
+<code>java.lang.invoke.VarHandle</code>的实例是一种动态强类型引用，指向一个变量或变量族，包括：静态字段（static fields），非静态字段（non-static fields），数组元素（array elements），堆外数据结构组件（off-heap data structure components）。
+更多细节请参阅 Java SE 平台 API 中的 <code>java.lang.invoke</code> 包。</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+
+
                         <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
             </nav>
 
         </div>
 
-        <script type="text/javascript">
+
+
+
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script type="text/javascript">
+
+        <script>
         window.addEventListener('load', function() {
             MathJax.Hub.Register.StartupHook('End', function() {
                 window.setTimeout(window.print, 100);
             });
         });
         </script>
+
+    </div>
     </body>
 </html>

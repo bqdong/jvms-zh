@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>数据类型 - JVM Specification (Java SE 17 Edition) Chinese Translation</title>
+        <title>特殊的方法 - JVM Specification (Java SE 17 Edition) Chinese Translation</title>
 
 
         <!-- Custom HTML head -->
@@ -157,22 +157,62 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2 id="数据类型"><a class="header" href="#数据类型">数据类型</a></h2>
-<p>与 Java 编程语言一样，Java 虚拟机在两种类型上进行操作：<em>原子类型（primitive types）<em>和</em>引用类型（reference types）</em>。相应地，有两种类型的值可以被存储在变量中，作为参数传递，作为方法返回值被返回，并可以对其进行操作：<em>原子类型的值（primitive values）<em>和</em>引用类型的值（reference values）</em>。</p>
-<p>Java 虚拟机期望几乎所有类型检查都在运行前完成，通常这是由编译器完成的，而不必由 Java 完成虚拟机本身完成。原子类型的值不需要被标记（tagged）或以其他方式检查以确定它们在运行时的类型，或与引用类型的值进行区分。取而代之的是Java虚拟机的使用那些操作在特定类型上的指令来区分操作数类型。例如，<em>iadd</em>、<em>ladd</em>、<em>fadd</em> 和 <em>dadd</em> 都是 Java 虚拟机将两个数值相加并产生数值结果的指令，但每一个都是专门针对其操作数类型：分别为<code> int</code>、<code>long</code>、<code>float</code> 和 <code>double</code>。对于Java虚拟机指令集支持的类型的总结，请参阅 §2.11.1。</p>
-<p>Java 虚拟机包含对对象的显式支持。一个对象是动态分配的类实例或数组。对对象的引用被认为时 Java 虚拟机引用（<code>reference</code>）类型。<code>reference</code>类型的值可以被认为是指向对象的指针。总是通过<code>reference</code>类型的值来操作、传递和测试对象。</p>
+                        <h1 id="特殊的方法"><a class="header" href="#特殊的方法">特殊的方法</a></h1>
+<h2 id="实例初始化方法"><a class="header" href="#实例初始化方法">实例初始化方法</a></h2>
+<p>一个类有0个或过个实例初始化方法（instance initialization methods），通常每一个都对应一个使用Java语言写的构造方法。</p>
+<p>一个方法是构造方法需要满足下面所有条件：</p>
+<ul>
+<li>定义在类中（不是接口）</li>
+<li>有特殊的名字 (<code>&lt;init&gt;</code>)</li>
+<li>是 void 类型的</li>
+</ul>
+<p>在一个类中，任何非void的名为 <code>&lt;init&gt;</code> 的方法不是实例初始化方法。在接口中，任何名为 <code>&lt;init&gt;</code> 的方法不是实例初始化方法。这些方法不能被Java虚拟机调用并且被格式检查所拒绝。</p>
+<p>实例初始化方法的声明和使用被Java虚拟机限制。对于声明，方法的 <code>access_flags</code> 和 <code>code</code> 被约束。对于使用，实例初始化方法只被 <code>invokespecial</code> 指令调用。</p>
+<blockquote>
+<p>因为 <code>&lt;init&gt;</code> 在Java语言中不是一个合法的标识符，它不能被使用Java语言程序直接使用。</p>
+</blockquote>
+<h2 id="类初始化方法class-initialization-methods"><a class="header" href="#类初始化方法class-initialization-methods">类初始化方法（Class Initialization Methods）</a></h2>
+<p>一个类或接口最多拥有一个类或接口初始化方法，并由 Java 虚拟机（JVM）在初始化时调用该方法（§5.5）。</p>
+<p>一个方法被视为类或接口初始化方法（<code>&lt;clinit&gt;</code>），当且仅当满足以下所有条件：</p>
+<ul>
+<li>
+<p>方法名必须为 <code>&lt;clinit&gt;</code>（特殊名称，非 Java 合法标识符）。</p>
+</li>
+<li>
+<p>返回类型必须为 void（§4.3.3）。</p>
+</li>
+<li>
+<p>在版本号 ≥ 51.0（Java SE 7+）的类文件中：必须设置 ACC_STATIC 标志（静态方法）。不能接受任何参数（Java SE 9+ 新增要求）。</p>
+</li>
+</ul>
+<blockquote>
+<p><code>ACC_STATIC</code>的要求在Java SE 7 中被引入，不接受参数在 Java SE 9中引入。类文件的版本号在 50.0 及以以下，名为 <code>&lt;clinit&gt;</code> 并且是void的方法被认为是类或接口初始化方法，不管是否设置 <code>ACC_STATIC</code> 或者接受参数。</p>
+</blockquote>
+<p>类文件中其他名为 <clinit> 的方法不被视为初始化方法，且：JVM 不会调用这些方法。无法通过任何 JVM 指令调用（§4.9.1）。格式检查（verification）会拒绝此类方法（§4.6, §4.8）。</p>
+<blockquote>
+<p>由于 <code>&lt;clinit&gt;</code> 不是合法的 Java 标识符，开发者无法直接在 Java 代码中声明该方法。它仅由编译器自动生成（如静态变量初始化或静态代码块 static { ... }）</p>
+</blockquote>
+<h2 id="签名多态方法signature-polymorphic-methods"><a class="header" href="#签名多态方法signature-polymorphic-methods">签名多态方法（Signature Polymorphic Methods）</a></h2>
+<p>满足以下所有条件的方法称为签名多态方法（signature polymorphic）：</p>
+<ul>
+<li>声明位置：必须在 <code>java.lang.invoke.MethodHandle</code> 类或 <code>java.lang.invoke.VarHandle</code> 类中声明。</li>
+<li>参数类型：仅接受一个形式参数，类型为 <code>Object[]</code>。</li>
+<li>修饰符标志：必须同时设置 <code>ACC_VARARGS</code>（可变参数）和 <code>ACC_NATIVE</code>（本地方法）标志。</li>
+</ul>
+<p>Java 虚拟机（JVM）在 <code>invokevirtual</code> 指令（§invokevirtual）中对签名多态方法进行特殊处理，以实现以下功能：
+动态调用方法句柄（method handle）；访问一个被<code>java.lang.invoke.VarHandle</code>实例所引用的变量。</p>
+<p>方法句柄（method handle）是一种动态强类型、可直接执行的引用，指向底层方法、构造函数、字段或类似低级操作（§5.4.3.5），支持对参数或返回值进行可选转换（如类型适配、参数插入等）。
+<code>java.lang.invoke.VarHandle</code>的实例是一种动态强类型引用，指向一个变量或变量族，包括：静态字段（static fields），非静态字段（non-static fields），数组元素（array elements），堆外数据结构组件（off-heap data structure components）。
+更多细节请参阅 Java SE 平台 API 中的 <code>java.lang.invoke</code> 包。</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../chap02/class_file_format.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../chap02/floating_point_arithmetic.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../chap02/primitive_type.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -180,13 +220,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../chap02/class_file_format.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../chap02/floating_point_arithmetic.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../chap02/primitive_type.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

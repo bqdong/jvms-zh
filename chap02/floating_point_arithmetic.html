@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>浮点数算术 - JVM Specification (Java SE 17 Edition) Chinese Translation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">JVM Specification (Java SE 17 Edition) Chinese Translation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="浮点数运算"><a class="header" href="#浮点数运算">浮点数运算</a></h1>
+<p>Java 虚拟机整合了 IEEE 754 浮点数标准的子集。</p>
+<blockquote>
+<p>在Java SE 15 及之后，Java虚拟机使用2019版的 IEEE 754 标注。之前的Java虚拟机使用1985版的 IEEE 754 标准，32位格式被称作单精度浮点数，64位格式被称为双精度浮点数。</p>
+</blockquote>
+<p>许多算术和类型转换的Java虚拟机指令支持浮点数。这些指令对应的 IEEE 754 操作如下表，除了下方特别描述的。</p>
+<div class="table-wrapper"><table><thead><tr><th>指令</th><th>IEEE 754 操作</th></tr></thead><tbody>
+<tr><td><strong><code>demp&lt;op&gt;</code></strong> , <code>femp&lt;op&gt;</code></td><td><code>compareQuietLess</code>（静默小于）,<br><code>compareQuietLessEqual</code>（静默小于等于）,<br><code>compareQuietGreater</code>（静默大于）,<br><code>compareQuietGreaterEqual</code>（静默大于等于）,<br><code>compareQuietEqual</code>（静默等于）,<br><code>compareQuietNotEqual</code>（静默不等于）</td></tr>
+<tr><td><strong><code>dadd</code></strong> , <strong><code>fadd</code></strong></td><td><code>addition</code>（加法）</td></tr>
+<tr><td><strong><code>dsub</code></strong> , <strong><code>fsub</code></strong></td><td><code>subtraction</code>（减法）</td></tr>
+<tr><td><strong><code>dmul</code></strong> , <strong><code>fmul</code></strong></td><td><code>multiplication</code>（乘法）</td></tr>
+<tr><td><strong><code>ddiv</code></strong> , <strong><code>fdiv</code></strong></td><td><code>division</code>（除法）</td></tr>
+<tr><td><strong><code>dneg</code></strong> , <strong><code>fneg</code></strong></td><td><code>negate</code>（取负）</td></tr>
+<tr><td><strong><code>i2d</code></strong> , <strong><code>i2f</code></strong> ,<br><strong><code>l2d</code></strong> , <strong><code>l2f</code></strong></td><td><code>convertFromInt</code>（从整数转换）</td></tr>
+<tr><td><strong><code>d2i</code></strong> , <strong><code>d2l</code></strong> ,<br><strong><code>f2i</code></strong> , <strong><code>f2l</code></strong></td><td><code>convertToIntegerTowardZero</code>（向零取整转换）</td></tr>
+<tr><td><strong><code>d2f</code></strong> , <strong><code>f2d</code></strong></td><td><code>convertFormat</code>（格式转换）</td></tr>
+</tbody></table>
+</div>
+<p>Java虚拟机支持的浮点数运算和IEEE 754 标准的主要差异是：</p>
+<ul>
+<li>浮点数余数指令 <code>drem</code> 和 <code>frem</code> 和 IEEE 754 的不对应。JVM 使用基于使用向0舍入策略的隐式除法；IEEE 754的余数指令则使用基于四舍五入的隐式除法。（舍入策略描述在后面）</li>
+<li>浮点数取负指令<code>dneg</code> 和 <code>fneg</code> 和 IEEE 754 的取负操作并不是精确对应。尤其是指令不需要 NaN 的符号位翻转。</li>
+<li>Java虚拟机的浮点数指令不会抛出异常，陷入，或者其它符号行的 IEEE 754 不合法的异常操作，如除 0，溢出，下溢，或不精确。</li>
+<li>Java虚拟机不只是 IEEE 754 符号浮点数比较，并且没有符号性的NaN值。</li>
+<li>IEEE 754 包含舍入方向属性的舍入策略，Java虚拟机中没有对应的。Java虚拟机对于一个浮点数指令没有提供任何方法取改变舍入策略。</li>
+<li>Java虚拟机不支持 IEEE 754 定义的扩展的32位和扩展性的64位浮点数格式。超过指定的<code>float</code>类型和<code>double</code>类型的扩展的范围和精度在操作或者存储浮点数时不会使用。</li>
+</ul>
+<blockquote>
+<p>一些 IEEE 754 操作没有对应的Java虚拟机指令，它们通过 <code>Math</code> 和 <code>StrictMath</code> 类提供，包含 IEEE 754 squareRoot 操作通过 <code>sqrt</code> 方法提供，IEEE 754 fusedMultiplyAdd 操作通过 <code>fma</code> 方法提供，IEEE 754 取余通过 <code>IEEEremainder</code> 方法提供。</p>
+</blockquote>
+<p>Java虚拟机需要支持 IEEE 754 <em>subnormal</em> 浮点数和 <em>gradual underflow</em> ，这使证明特定数值算法的期望属性更加容易。</p>
+<p>浮点运算是实数运算的近似模拟。实数有无限个，特定的浮点数格式只支持有限值。Java虚拟机中，舍入策略 (rounding policy) 是一个将实数映射成特定浮点数值的函数。对于在浮点数范围内可表示的实数，实数轴上的一个连续区间会被映射到单个浮点数值。在浮点格式中，数值上与某个浮点值相等的实数会被映射到该浮点值。例如，实数 1.5 在兼容的浮点格式下会被精确映射为浮点值 1.5。Java虚拟机定义了两种舍入策略，如下：</p>
+<ul>
+<li>四舍五入（<em>round to nearest</em>）策略应用在所有浮点数指令上，除了：转换成整数值和余数。在四舍五入策略下，不精确的结果必须是舍入后无限精确结果最接近的值；如果有两个值的接近程度一样，那么最低位是0的那个将会被选中作为结果。四舍五入舍入策略对应 IEEE 754 的默认舍入方向属性，<em>roundTiesToEven</em>.
+<blockquote>
+<p><em>roundTiesToEven</em> 舍入方向属性在1985版的 IEEE 754 标准中被称为四舍五入(round to nearest)舍入模式。Java虚拟机中的舍入策略是在这个舍入模式之后命名的。</p>
+</blockquote>
+</li>
+<li>向0舍入策略(<em>round toward zero</em>)应用在：1. 将浮点数转换成整数指令 <em>d2i</em>，<em>d2l</em>, <em>f2i</em>, <em>f2l</em> 中；2. 浮点数取余指令 <em>drem</em>，<em>frem</em> 。在向零取整（round toward zero）舍入策略下，不精确的结果会被舍入至最接近的、幅度不大于无限精度结果的可表示值。对于整数转换，向零取整策略等同于截断（直接丢弃小数部分的有效位）。向零取证的舍入策略对应 IEEE 754 中 <em>roundTowardZero</em> 舍入方向属性。
+<blockquote>
+<p><em>roundTowardZero</em> 舍入方向属性在1985版的 IEEE 754 标准中被称为向零取整(round toward zero)舍入模式。Java虚拟机中的舍入策略是在这个舍入模式之后命名的。</p>
+</blockquote>
+</li>
+</ul>
+<p>Java 虚拟机（JVM）要求所有浮点运算指令必须将其结果舍入到目标精度。每条指令所使用的舍入策略为最近舍入（round to nearest）或向零舍入（round toward zero），具体采用哪种方式取决于上述规范。</p>
+<blockquote>
+<p>Java 1.0 和 Java 1.1 要求对浮点数表达式进行严格求值（Strict evaluation）。严格求值意思是每个 <code>float</code> 操作数对应一个 IEEE 754 32位格式可表示的值，每一个 <code>double</code> 操作数对应一个 IEEE 754 64位可表示的值，并且每一个浮点数操作符对应 IEEE 754的操作必须需匹配 IEEE 754中相同操作的结果。</p>
+<p>严格求值（Strict evaluation）虽然能提供可预测的结果，但在 Java 1.0/1.1 时代的一些常见处理器架构上，会导致 Java 虚拟机（JVM）实现的性能问题。因此，从 Java 1.2 到 Java SE 16，Java SE 平台允许 JVM 实现为每种浮点类型关联 一个或两个值集（value sets）：</p>
+<p>float 类型 关联以下值集：</p>
+<ul>
+<li>
+<p>float 值集：对应 IEEE 754 二进制 32 位格式（binary32）可表示的值。</p>
+</li>
+<li>
+<p>float-extended-exponent 值集：精度位数相同，但指数范围更大。</p>
+</li>
+</ul>
+<p>double 类型 关联以下值集：</p>
+<ul>
+<li>
+<p>double 值集：对应 IEEE 754 二进制 64 位格式（binary64）可表示的值。</p>
+</li>
+<li>
+<p>double-extended-exponent 值集：精度位数相同，但指数范围更大。</p>
+</li>
+</ul>
+<p>默认允许使用 扩展指数值集（extended-exponent value sets），缓解了某些处理器架构上的性能问题。</p>
+<p>为了保持兼容性，Java 1.2 允许类文件（class file）通过 ACC_STRICT 标志 禁止 JVM 实现使用扩展指数值集。具体方式为：
+在方法声明上设置 ACC_STRICT 标志，强制该方法内的浮点运算：float 操作数使用 float 值集（binary32）。double 操作数使用 double 值集（binary64）。
+这样，标记为 ACC_STRICT 的方法的浮点语义与 Java 1.0/1.1 完全一致，确保计算结果的可预测性。</p>
+<p>从 Java SE 17 开始，Java SE 平台始终要求严格求值（strict evaluation）浮点运算。过去在部分处理器架构上因严格求值导致的性能问题，在新一代硬件中已不复存在。因此，本规范不再将 float 和 double 类型与之前描述的四个值集（value sets）关联，且 ACC_STRICT 标志（对应 strictfp 关键字）不再影响浮点运算的求值方式。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chap02/representation_of_objects.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../chap02/special_methods.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chap02/representation_of_objects.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../chap02/special_methods.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
