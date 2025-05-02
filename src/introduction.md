@@ -45,7 +45,7 @@ Java 虚拟机规范，但它本身并不是规范的一部分。在*Java Virtua
 
 在第二版的Java虚拟机规范，第8章详细解释了具有共享主存的Java虚拟机线程交互的底层操作。在*Java Virtual Machine Specification, Java SE 17 Edition*中，读者可以参考[*The Java Language Specification, Java SE 17 Edition*](https://docs.oracle.com/javase/specs/jls/se17/html/index.html)的第17章有关线程和锁的信息。第17章反映了出自于JSR133专家组的[The Java Memory Model and Thread Specification](https://www.cs.umd.edu/~pugh/java/memoryModel/jsr133.pdf)。
 
-## 符号
+## 表示法
 
 在整个规范中，我们指出的类和接口取自Java SE平台API。当我们引用一个类或接口时(除了那些声明在示例中的)，使用单个标识符*N*，其指的是`java.lang`包中的类或接口。在`java.lang`包以外的类或者接口，我们使用全限定名（fully qualified name）来指明。
 

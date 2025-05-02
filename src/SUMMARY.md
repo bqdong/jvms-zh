@@ -9,3 +9,5 @@
   - [运行时数据区域](./chap02/runtime_data_area.md)
   - [栈帧](./chap02/frames.md)
   - [对象的表示](./chap02/representation_of_objects.md)
+  - [浮点数算术](./chap02/floating_point_arithmetic.md)
+  - [特殊的方法](./chap02/special_methods.md)
